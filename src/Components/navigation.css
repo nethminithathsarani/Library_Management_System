@@ -1,0 +1,64 @@
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #5848b4; 
+    padding: 10px 20px; 
+    height:110px;
+  }
+  
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 20px; 
+  }
+  
+  .logo {
+    height: 80px;
+    width: 80px;  
+    object-fit: contain;  
+    margin-right: 10px; 
+  }
+  
+  
+  
+  
+  .nav-links {
+    list-style: none;
+    display: flex; 
+    margin: 0;
+    padding: 0;
+  }
+  
+  .nav-links li {
+    margin-left: 20px; 
+  }
+  
+  .nav-links a {
+    color: white;
+    text-decoration: none; 
+    font-size: 18px;
+    padding: 8px 16px; 
+    transition: background-color 0.3s ease; 
+  }
+  
+  .nav-links a:hover {
+    background-color: #190783; 
+    border-radius: 4px; 
+  }
+  
+  .library-name {
+    color: #040208; 
+    font-size: 16px; 
+    font-weight: bold;
+    margin-top: 5px; 
+  }
+
+  .system-name {
+    color: #0b0433; 
+    font-size: 14px; 
+    font-weight: normal; 
+    margin-top: 2px; 
+  }
