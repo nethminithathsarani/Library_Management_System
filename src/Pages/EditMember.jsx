@@ -1,7 +1,9 @@
-
+import Navigation from '../Components/Navigation'
 
 export default function EditMember() {
   return (
-    <div>EditMember</div>
+    <div>
+      <Navigation/>
+    </div>
   )
 }

@@ -1,7 +1,9 @@
-
+import Navigation from '../Components/Navigation'
 
 export default function Addmember() {
   return (
-    <div>Addmember</div>
+    <div>
+      <Navigation/>
+    </div>
   )
 }

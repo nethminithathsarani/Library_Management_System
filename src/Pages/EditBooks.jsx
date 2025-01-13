@@ -1,7 +1,9 @@
-
+import Navigation from '../Components/Navigation'
 
 export default function EditBooks() {
   return (
-    <div>EditBooks</div>
+    <div>
+      <Navigation/>
+    </div>
   )
 }
