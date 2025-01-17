@@ -4,13 +4,13 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* Logo Section */}
+      
         <div className="logo-section">
           <img src="logo.png" alt="Logo" className="footer-logo" />
           <h2 className="footer-title">Knowledge Corner</h2>
         </div>
 
-        {/* About Us Section */}
+       
         <div className="about-section">
           <h3>About Us</h3>
           <p>
@@ -20,7 +20,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Contact Us Section */}
+       
         <div className="contact-section">
           <h3>Contact Us</h3>
           <div className="social-links">

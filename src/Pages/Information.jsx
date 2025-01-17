@@ -9,7 +9,7 @@ export default function Information() {
     <div className="about-page">
       <h1 className="about-title">About Us</h1>
 
-      {/* Introduction Section */}
+      
       <section className="about-intro">
         <p>
           Welcome to our library! We are dedicated to fostering knowledge, learning, and growth.
@@ -18,7 +18,7 @@ export default function Information() {
         </p>
       </section>
 
-      {/* Contact Information Section */}
+     
       <section className="contact-info">
         <h2>Contact Information</h2>
         <div className="contact-details">
@@ -28,7 +28,7 @@ export default function Information() {
         </div>
       </section>
 
-      {/* Operating Hours Section */}
+      
       <section className="operating-hours">
         <h2>Operating Hours</h2>
         <div className="hours-details">
@@ -37,7 +37,7 @@ export default function Information() {
         </div>
       </section>
 
-      {/* Google Maps Embed */}
+     
       <section className="location-map">
         <h2>Find Us</h2>
         <iframe
@@ -51,7 +51,7 @@ export default function Information() {
         ></iframe>
       </section>
 
-      {/* Call-to-Action Section */}
+      
       <section className="call-to-action">
         <p>We look forward to your visit. Let’s explore the world of books together!</p>
       </section>
