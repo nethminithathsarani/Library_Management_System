@@ -1,39 +1,32 @@
-import express from "express";
-import mysql from "mysql";
-import cors from "cors";
-import dotenv from "dotenv";
-import process from "process";
-
+import express from 'express';
+import dotenv from 'dotenv';
+import mysql from 'mysql';
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
-// MySQL Database Connection
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: 'localhost',
+  user: 'root', 
+  password: 'nethmini123', 
+  database: 'library_management', 
 });
 
 db.connect((err) => {
   if (err) {
-    console.error("Database connection failed: " + err.stack);
-    return;
+    console.error('Database connection failed: ', err.stack);
+  } else {
+    console.log('Connected to database');
   }
-  console.log("Connected to MySQL database");
 });
 
-// API Routes
-app.get("/", (req, res) => {
-  res.send("Library Management System Backend");
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
-// Start the Server
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });

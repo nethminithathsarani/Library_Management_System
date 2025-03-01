@@ -1,73 +1,72 @@
-
 .footer { 
-    background-color: #2c3e50;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    font-family: Arial, sans-serif;
-  }
-  
-  .footer-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .logo-section {
-    text-align: center;
-  }
-  
-  .footer-logo {
-    width: 100px;
-    margin-bottom: 10px;
-  }
-  
-  .footer-title {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .about-section {
-    max-width: 300px;
-    text-align: left;
-  }
-  
-  .about-section h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .about-section p {
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  
-  .contact-section {
-    text-align: center;
-  }
-  
-  .contact-section h3 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  .social-links {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
-  
-  .social-icon {
-    width: 30px;
-    height: 30px;
-    transition: transform 0.3s ease;
-  }
-  
-  .social-icon:hover {
-    transform: scale(1.1);
-  }
-  
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-section {
+  text-align: center;
+}
+
+.footer-logo {
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+.footer-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.about-section {
+  max-width: 300px;
+  text-align: left;
+}
+
+.about-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.about-section p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.contact-section {
+  text-align: center;
+}
+
+.contact-section h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+}
+

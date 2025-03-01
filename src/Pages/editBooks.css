@@ -1,66 +1,66 @@
 
 .edit-delete-container {
-    margin: 20px auto;
-    max-width: 1000px;
-    padding: 20px;
-  }
-  
-  .page-title {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .books-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .books-table th,
-  .books-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .books-table th {
-    background-color: #f8f8f8;
-    font-weight: bold;
-  }
-  
-  .books-table td {
-    background-color: #fefefe;
-  }
-  
-  .no-data {
-    text-align: center;
-    color: #888;
-  }
-  
-  .edit-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    margin-right: 5px;
-    border-radius: 4px;
-  }
-  
-  .edit-button:hover {
-    background-color: #45a049;
-  }
-  
-  .delete-button {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .delete-button:hover {
-    background-color: #d32f2f;
-  }
+  margin: 20px auto;
+  max-width: 1000px;
+  padding: 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.books-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.books-table th,
+.books-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.books-table th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+.books-table td {
+  background-color: #fefefe;
+}
+
+.no-data {
+  text-align: center;
+  color: #888;
+}
+
+.edit-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  margin-right: 5px;
+  border-radius: 4px;
+}
+
+.edit-button:hover {
+  background-color: #45a049;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
   
