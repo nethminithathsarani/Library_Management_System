@@ -1,0 +1,19 @@
+﻿<Page x:Class="LibraryManagement.BooksPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Books Page">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Books Management" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
+
+            <ListView Name="BookGrid" Height="200"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="Add Book" Click="Add_Book" Margin="5"/>
+                <Button Content="Edit Book" Click="Edit_Book" Margin="5"/>
+                <Button Content="Delete Book" Click="Delete_Book" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
