@@ -1,0 +1,93 @@
+/* General form styling for all forms */
+form {
+  width: 100%;
+  max-width: 500px;  /* Match the max-width of your "Add Member" page form */
+  margin: 0 auto;  /* Center the form */
+  padding: 20px;  /* Add padding */
+  box-sizing: border-box;  /* Ensure padding is included in width calculation */
+  background-color: transparent;  /* Remove background color */
+  border-radius: 0;  /* Remove rounded corners */
+  box-shadow: none;  /* Remove box shadow */
+}
+
+/* Optionally, adjust the specific size of inputs inside all forms */
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.add-member-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: transparent; /* Remove background color */
+  box-shadow: none; /* Remove box shadow */
+  border-radius: 0; /* Remove rounded corners */
+}
+
+.page-title {
+  font-size: 2rem;
+  color: black;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-member-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input,
+textarea,
+select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  resize: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
