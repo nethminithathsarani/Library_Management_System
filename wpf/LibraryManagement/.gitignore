@@ -1,1 +1,29 @@
+# Ignore build and output directories
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+
+# Ignore NuGet packages and restore files
+packages/
+*.nupkg
+*.nuspec
+NuGet.Config
+
+# Ignore IDE-specific files
 .vs/
+.vscode/
+.idea/
+
+# Ignore local environment files
+.env
+.env.local
+
+# Ignore compiled files
+*.dll
+*.exe
+*.pdb
+*.cache
