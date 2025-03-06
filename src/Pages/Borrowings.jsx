@@ -7,6 +7,7 @@ export default function BorrowingActivities() {
   return (
     <div>
       <Navigation />
+
       <div className="borrowing-page-container">
         <h1 className="page-title">User Borrowing Activities</h1>
 
@@ -72,6 +73,7 @@ export default function BorrowingActivities() {
         </div>
       </div>
       <Footer />
+     
     </div>
   );
 }

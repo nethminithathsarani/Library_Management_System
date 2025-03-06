@@ -5,7 +5,9 @@ import AddBooks from './Pages/AddBooks'
 import EditBooks from './Pages/EditBooks'
 import Addmember from './Pages/Addmember'
 import EditMember from './Pages/EditMember'
+import SignUp from './Pages/signup'
 import Login from './Pages/Login'
+
 
 import './App.css'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -23,6 +25,7 @@ function App() {
           <Route path="/Addmember" element={<Addmember />} />
           <Route path="/EditMember" element={<EditMember />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="signup" element={<SignUp />} />
         </Routes>
       </div>
     </Router>

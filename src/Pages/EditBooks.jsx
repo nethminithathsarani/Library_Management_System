@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
@@ -6,7 +5,6 @@ import './editBooks.css';
 
 export default function EditDeleteBooks() {
   const [books, setBooks] = useState([]);
-
 
   useEffect(() => {
     fetch('/api/books') 
@@ -17,7 +15,6 @@ export default function EditDeleteBooks() {
 
   const handleEdit = (bookId) => {
     console.log('Edit book with ID:', bookId);
-    
   };
 
   const handleDelete = (bookId) => {
@@ -39,6 +36,8 @@ export default function EditDeleteBooks() {
   return (
     <div>
       <Navigation />
+     
+
       <div className="edit-delete-container">
         <h1 className="page-title">Edit or Delete Books</h1>
         <table className="books-table">
@@ -88,6 +87,7 @@ export default function EditDeleteBooks() {
         </table>
       </div>
       <Footer />
+    
     </div>
   );
 }
