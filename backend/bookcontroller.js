@@ -1,30 +1,41 @@
-import { addBook, getBooks, getBookById } from '../models/bookModel.js';
+const db = require('../db/db');
 
-export const addNewBook = (req, res) => {
+// Create a new book
+exports.createBook = (req, res) => {
   const { title, author, genre, isbn, publicationDate } = req.body;
-  addBook(title, author, genre, isbn, publicationDate, (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error adding book', error: err });
-    }
-    res.status(200).json({ message: 'Book added successfully', bookId: result.insertId });
+  const sql = 'INSERT INTO books (title, author, genre, isbn, publicationDate) VALUES (?, ?, ?, ?, ?)';
+  db.query(sql, [title, author, genre, isbn, publicationDate], (err, result) => {
+    if (err) throw err;
+    res.status(201).json({ message: 'Book created', id: result.insertId });
   });
 };
 
-export const getAllBooks = (req, res) => {
-  getBooks((err, books) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error retrieving books', error: err });
-    }
-    res.status(200).json(books);
+// Get all books
+exports.getAllBooks = (req, res) => {
+  const sql = 'SELECT * FROM books';
+  db.query(sql, (err, results) => {
+    if (err) throw err;
+    res.status(200).json(results);
   });
 };
 
-export const getBook = (req, res) => {
+// Update a book
+exports.updateBook = (req, res) => {
   const { id } = req.params;
-  getBookById(id, (err, book) => {
-    if (err || !book) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-    res.status(200).json(book);
+  const { title, author, genre, isbn, publicationDate } = req.body;
+  const sql = 'UPDATE books SET title = ?, author = ?, genre = ?, isbn = ?, publicationDate = ? WHERE id = ?';
+  db.query(sql, [title, author, genre, isbn, publicationDate, id], (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: 'Book updated' });
+  });
+};
+
+// Delete a book
+exports.deleteBook = (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM books WHERE id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: 'Book deleted' });
   });
 };

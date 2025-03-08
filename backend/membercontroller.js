@@ -1,30 +1,41 @@
-import { addMember, getMembers, getMemberById } from '../models/memberModel.js';
+const db = require('../db/db');
 
-export const addNewMember = (req, res) => {
+// Create a new member
+exports.createMember = (req, res) => {
   const { name, email, phone, address, membershipType } = req.body;
-  addMember(name, email, phone, address, membershipType, (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error adding member', error: err });
-    }
-    res.status(200).json({ message: 'Member added successfully', memberId: result.insertId });
+  const sql = 'INSERT INTO members (name, email, phone, address, membershipType) VALUES (?, ?, ?, ?, ?)';
+  db.query(sql, [name, email, phone, address, membershipType], (err, result) => {
+    if (err) throw err;
+    res.status(201).json({ message: 'Member created', id: result.insertId });
   });
 };
 
-export const getAllMembers = (req, res) => {
-  getMembers((err, members) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error retrieving members', error: err });
-    }
-    res.status(200).json(members);
+// Get all members
+exports.getAllMembers = (req, res) => {
+  const sql = 'SELECT * FROM members';
+  db.query(sql, (err, results) => {
+    if (err) throw err;
+    res.status(200).json(results);
   });
 };
 
-export const getMember = (req, res) => {
+// Update a member
+exports.updateMember = (req, res) => {
   const { id } = req.params;
-  getMemberById(id, (err, member) => {
-    if (err || !member) {
-      return res.status(404).json({ message: 'Member not found' });
-    }
-    res.status(200).json(member);
+  const { name, email, phone, address, membershipType } = req.body;
+  const sql = 'UPDATE members SET name = ?, email = ?, phone = ?, address = ?, membershipType = ? WHERE id = ?';
+  db.query(sql, [name, email, phone, address, membershipType, id], (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: 'Member updated' });
+  });
+};
+
+// Delete a member
+exports.deleteMember = (req, res) => {
+  const { id } = req.params;
+  const sql = 'DELETE FROM members WHERE id = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    res.status(200).json({ message: 'Member deleted' });
   });
 };
