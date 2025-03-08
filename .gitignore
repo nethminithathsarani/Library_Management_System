@@ -1,24 +1,29 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Ignore build and output directories
+bin/
+obj/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
+# Ignore user-specific files
+*.user
 *.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.userosscache
+
+# Ignore NuGet packages and restore files
+packages/
+*.nupkg
+*.nuspec
+NuGet.Config
+
+# Ignore IDE-specific files
+.vs/
+.vscode/
+.idea/
+
+# Ignore local environment files
+.env
+.env.local
+
+# Ignore compiled files
+*.dll
+*.exe
+*.pdb
+*.cache
