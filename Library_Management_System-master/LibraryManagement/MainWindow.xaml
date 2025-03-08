@@ -1,0 +1,17 @@
+﻿<Window x:Class="LibraryManagement.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Library Management" Height="500" Width="800">
+
+    <DockPanel>
+        <!-- NAVIGATION BAR -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="Gray">
+            <Button Content="Home" Click="GoToHomePage" Margin="10"/>
+            <Button Content="Books" Click="GoToBooksPage" Margin="10"/>
+            <Button Content="Members" Click="GoToMembersPage" Margin="10"/>
+        </StackPanel>
+
+        <!-- CONTENT FRAME -->
+        <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
+    </DockPanel>
+</Window>

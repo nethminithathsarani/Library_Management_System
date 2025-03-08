@@ -1,0 +1,32 @@
+﻿<Page x:Class="LibraryManagement.BooksPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Books Page">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Books Management" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
+
+            <!-- ListView to display book details -->
+            <ListView Name="BookGrid" Height="200" Margin="10">
+                <ListView.View>
+                    <GridView>
+                        <!-- Column for Book Title -->
+                        <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="150"/>
+                        <!-- Column for Book Author -->
+                        <GridViewColumn Header="Author" DisplayMemberBinding="{Binding Author}" Width="150"/>
+                        <!-- Column for Book Year -->
+                        <GridViewColumn Header="Year" DisplayMemberBinding="{Binding Year}" Width="100"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!-- Buttons for Add, Edit, and Delete -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="Add Book" Click="Add_Book" Margin="5"/>
+                <Button Content="Edit Book" Click="Edit_Book" Margin="5"/>
+                <Button Content="Delete Book" Click="Delete_Book" Margin="5"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>
