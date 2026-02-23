@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import './addMember.css';
+import './addmember.css';
 
 export default function AddMember() {
   const [memberDetails, setMemberDetails] = useState({

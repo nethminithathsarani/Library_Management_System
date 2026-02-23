@@ -9,7 +9,7 @@ function Navigation() {
   return (
     <nav className="navbar">
       <div className="logo-container">
-        <img src="logo.png" alt="Logo" className="logo" />
+        <img src="/src/assets/Images/logo.png" alt="Logo" className="logo" />
         <div className="library-name">Knowledge Corner</div>
         <div className="system-name">Library Management System</div>
       </div>

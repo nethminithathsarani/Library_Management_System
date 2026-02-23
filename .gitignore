@@ -1,29 +1,31 @@
-# Ignore build and output directories
-bin/
-obj/
+### Node / Vite / React common ignores
+node_modules/
+dist/
+build/
+.cache/
 
-# Ignore user-specific files
-*.user
-*.suo
-*.userosscache
+### Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Ignore NuGet packages and restore files
-packages/
-*.nupkg
-*.nuspec
-NuGet.Config
-
-# Ignore IDE-specific files
-.vs/
-.vscode/
-.idea/
-
-# Ignore local environment files
+### Environment files (DO NOT COMMIT SECRETS)
 .env
 .env.local
+backend/.env
+backend/.env.local
 
-# Ignore compiled files
-*.dll
-*.exe
-*.pdb
-*.cache
+### Editor / OS
+.vscode/
+.vs/
+.idea/
+*.swp
+*.swo
+*.tmp
+*.log
+
+### Misc
+coverage/
+*.DS_Store
+Thumbs.db

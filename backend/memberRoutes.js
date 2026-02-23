@@ -1,12 +1,16 @@
-const express = require('express');
-const memberController = require('../controllers/memberController');
+import express from 'express';
+import {
+	createMember,
+	deleteMember,
+	getAllMembers,
+	updateMember,
+} from './memberController.js';
 
 const router = express.Router();
 
-// CRUD routes for members
-router.post('/', memberController.createMember);
-router.get('/', memberController.getAllMembers);
-router.put('/:id', memberController.updateMember);
-router.delete('/:id', memberController.deleteMember);
+router.post('/', createMember);
+router.get('/', getAllMembers);
+router.put('/:id', updateMember);
+router.delete('/:id', deleteMember);
 
-module.exports = router;
+export default router;

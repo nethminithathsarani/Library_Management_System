@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="footer-container">
       
         <div className="logo-section">
-          <img src="logo.png" alt="Logo" className="footer-logo" />
+          <img src="/src/assets/Images/logo.png" alt="Logo" className="footer-logo" />
           <h2 className="footer-title">Knowledge Corner</h2>
         </div>
 
@@ -29,16 +29,16 @@ export default function Footer() {
           <h3>Contact Us</h3>
           <div className="social-links">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-              <img src="facebook.png" alt="Facebook" className="social-icon" />
+              <img src="/src/assets/Images/facebook.png" alt="Facebook" className="social-icon" />
             </a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-              <img src="instagram.png" alt="Instagram" className="social-icon" />
+              <img src="/src/assets/Images/instagram.png" alt="Instagram" className="social-icon" />
             </a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <img src="twitter.png" alt="Twitter" className="social-icon" />
+              <img src="/src/assets/Images/twitter.png" alt="Twitter" className="social-icon" />
             </a>
             <a href="mailto:yourlibrary@gmail.com">
-              <img src="gmail.png" alt="Gmail" className="social-icon" />
+              <img src="/src/assets/Images/gmail.png" alt="Gmail" className="social-icon" />
             </a>
           </div>
         </div>

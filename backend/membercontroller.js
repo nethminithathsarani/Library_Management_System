@@ -1,41 +1,49 @@
-const db = require('../db/db');
+import db from './db.js';
 
-// Create a new member
-exports.createMember = (req, res) => {
+export const createMember = (req, res, next) => {
   const { name, email, phone, address, membershipType } = req.body;
   const sql = 'INSERT INTO members (name, email, phone, address, membershipType) VALUES (?, ?, ?, ?, ?)';
   db.query(sql, [name, email, phone, address, membershipType], (err, result) => {
-    if (err) throw err;
+    if (err) {
+      next(err);
+      return;
+    }
     res.status(201).json({ message: 'Member created', id: result.insertId });
   });
 };
 
-// Get all members
-exports.getAllMembers = (req, res) => {
+export const getAllMembers = (req, res, next) => {
   const sql = 'SELECT * FROM members';
   db.query(sql, (err, results) => {
-    if (err) throw err;
+    if (err) {
+      next(err);
+      return;
+    }
     res.status(200).json(results);
   });
 };
 
-// Update a member
-exports.updateMember = (req, res) => {
+export const updateMember = (req, res, next) => {
   const { id } = req.params;
   const { name, email, phone, address, membershipType } = req.body;
   const sql = 'UPDATE members SET name = ?, email = ?, phone = ?, address = ?, membershipType = ? WHERE id = ?';
-  db.query(sql, [name, email, phone, address, membershipType, id], (err, result) => {
-    if (err) throw err;
+  db.query(sql, [name, email, phone, address, membershipType, id], (err) => {
+    if (err) {
+      next(err);
+      return;
+    }
     res.status(200).json({ message: 'Member updated' });
   });
 };
 
-// Delete a member
-exports.deleteMember = (req, res) => {
+export const deleteMember = (req, res, next) => {
   const { id } = req.params;
   const sql = 'DELETE FROM members WHERE id = ?';
-  db.query(sql, [id], (err, result) => {
-    if (err) throw err;
+  db.query(sql, [id], (err) => {
+    if (err) {
+      next(err);
+      return;
+    }
     res.status(200).json({ message: 'Member deleted' });
   });
 };
