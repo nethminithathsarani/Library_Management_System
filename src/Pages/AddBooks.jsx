@@ -10,6 +10,10 @@ export default function ManageBooks() {
     genre: '',
     isbn: '',
     publicationDate: '',
+    category: '',
+    publishedYear: '',
+    available: true,
+    coverImageUrl: '',
   });
 
   const [borrowingDetails, setBorrowingDetails] = useState({
@@ -39,6 +43,10 @@ export default function ManageBooks() {
       genre: '',
       isbn: '',
       publicationDate: '',
+      category: '',
+      publishedYear: '',
+      available: true,
+      coverImageUrl: '',
     });
     setBorrowingDetails({
       bookId: '',
@@ -63,7 +71,11 @@ export default function ManageBooks() {
           borrowDate: borrowingDetails.borrowDate,
           dueDate: borrowingDetails.dueDate,
         }
-      : bookDetails;
+      : {
+          ...bookDetails,
+          available: bookDetails.available ? 1 : 0,
+          publishedYear: bookDetails.publishedYear ? Number(bookDetails.publishedYear) : null,
+        };
 
     try {
       const response = await fetch(endpoint, {
@@ -212,6 +224,51 @@ export default function ManageBooks() {
                   onChange={handleBookChange}
                   required
                   max={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="category">Category:</label>
+                <input
+                  type="text"
+                  id="category"
+                  name="category"
+                  value={bookDetails.category}
+                  onChange={handleBookChange}
+                  placeholder="Novel, Reference, etc."
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="publishedYear">Published Year:</label>
+                <input
+                  type="number"
+                  id="publishedYear"
+                  name="publishedYear"
+                  value={bookDetails.publishedYear}
+                  onChange={handleBookChange}
+                  placeholder="e.g., 2008"
+                  min="0"
+                  max={new Date().getFullYear()}
+                />
+              </div>
+              <div className="form-group checkbox-group">
+                <label htmlFor="available">Available:</label>
+                <input
+                  type="checkbox"
+                  id="available"
+                  name="available"
+                  checked={bookDetails.available}
+                  onChange={(e) => setBookDetails((prev) => ({ ...prev, available: e.target.checked }))}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="coverImageUrl">Cover Image URL:</label>
+                <input
+                  type="url"
+                  id="coverImageUrl"
+                  name="coverImageUrl"
+                  value={bookDetails.coverImageUrl}
+                  onChange={handleBookChange}
+                  placeholder="https://example.com/cover.jpg"
                 />
               </div>
             </>

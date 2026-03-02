@@ -1,19 +1,98 @@
+import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
 import './home.css';
 import Footer from '../Components/Footer';
 
 export default function Home() {
+  const [books, setBooks] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/books');
+        if (!response.ok) {
+          throw new Error('Failed to fetch books');
+        }
+        const data = await response.json();
+        setBooks(data);
+      } catch (error) {
+        console.error('Error fetching books for home page:', error);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
+  const popularBooks = books.slice(0, 5);
+
+  const getBookImage = (book) => {
+    // Prefer coverImageUrl from the database; fallback to a default image
+    return book.coverImageUrl || '/src/assets/Images/homeLibrary.jpg';
+  };
+
+  const handleBookSelect = (book) => {
+    setSelectedBook(book);
+    setIsModalOpen(true);
+  };
+
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        setIsModalOpen(false);
+        setSelectedBook(null);
+      }
+    };
+
+    if (isModalOpen) {
+      window.addEventListener('keydown', handleEsc);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [isModalOpen]);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBook(null);
+  };
+
+  const renderBookCard = (book) => (
+    <div
+      className={`book-card${selectedBook?.id === book.id ? ' selected' : ''}`}
+      key={book.id}
+      role="button"
+      tabIndex={0}
+      onClick={() => handleBookSelect(book)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          handleBookSelect(book);
+        }
+      }}
+    >
+      <img
+        src={getBookImage(book)}
+        alt={book.title}
+        className="book-image"
+      />
+      <p className="book-title">{book.title}</p>
+      <p className="book-author">{book.author}</p>
+    </div>
+  );
+
   return (
     <div>
-     
       <Navigation />
 
-    
       <div className="homepage-photo-container">
-      
-        <img src="/src/assets/Images/homeLibrary.jpg" alt="Library" className="homeLibrary" />
+        <img
+          src="/src/assets/Images/homeLibrary.jpg"
+          alt="Library"
+          className="homeLibrary"
+        />
 
-     
         <div className="search-bar-container">
           <input
             type="text"
@@ -26,71 +105,67 @@ export default function Home() {
         </div>
       </div>
 
-     
       <section className="popular-books-section">
         <h2 className="section-title">Popular Books</h2>
         <div className="books-container">
-          <div className="book-card">
-            <img src="/src/assets/Images/ggbook.jpeg" alt="The Great Gatsby" className="book-image" />
-            <p className="book-title">The Great Gatsby</p>
-            <p className="book-author">F. Scott Fitzgerald</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/killmb.jpeg" alt="To Kill a Mockingbird" className="book-image" />
-            <p className="book-title">To Kill a Mockingbird</p>
-            <p className="book-author">Harper Lee</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/haw.jpg" alt="A Brief History of Time" className="book-image" />
-            <p className="book-title">A Brief History of Time</p>
-            <p className="book-author">Stephen Hawking</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/pride.jpeg" alt="Pride and Prejudice" className="book-image" />
-            <p className="book-title">Pride and Prejudice</p>
-            <p className="book-author">Jane Austen</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/anne.jpeg" alt="The Diary of a Young Girl" className="book-image" />
-            <p className="book-title">The Diary of a Young Girl</p>
-            <p className="book-author">Anne Frank</p>
-          </div>
+          {popularBooks.length > 0 ? (
+            popularBooks.map((book) => renderBookCard(book))
+          ) : (
+            <p>No books available.</p>
+          )}
         </div>
       </section>
 
-    
       <section className="all-books-section">
         <h2 className="section-title">All Books</h2>
         <div className="books-container">
-          <div className="book-card">
-            <img src="/src/assets/Images/1984.jpeg" alt="1984" className="book-image" />
-            <p className="book-title">1984</p>
-            <p className="book-author">George Orwell</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/catcher.jpeg" alt="The Catcher in the Rye" className="book-image" />
-            <p className="book-title">The Catcher in the Rye</p>
-            <p className="book-author">J.D. Salinger</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/moby.jpeg" alt="Moby Dick" className="book-image" />
-            <p className="book-title">Moby Dick</p>
-            <p className="book-author">Herman Melville</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/war.jpeg" alt="War and Peace" className="book-image" />
-            <p className="book-title">War and Peace</p>
-            <p className="book-author">Leo Tolstoy</p>
-          </div>
-          <div className="book-card">
-            <img src="/src/assets/Images/hobbit.jpeg" alt="The Hobbit" className="book-image" />
-            <p className="book-title">The Hobbit</p>
-            <p className="book-author">J.R.R. Tolkien</p>
-          </div>
+          {books.length > 0 ? (
+            books.map((book) => renderBookCard(book))
+          ) : (
+            <p>No books available.</p>
+          )}
         </div>
       </section>
 
-      
+      {isModalOpen && selectedBook && (
+        <div
+          className="book-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Book details"
+          onClick={closeModal}
+        >
+          <div
+            className="book-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="book-modal-close"
+              onClick={closeModal}
+              aria-label="Close book details"
+            >
+              ×
+            </button>
+
+            <div className="book-modal-content">
+              <img
+                src={getBookImage(selectedBook)}
+                alt={selectedBook.title}
+                className="book-modal-image"
+              />
+              <div className="book-modal-details">
+                <h3>{selectedBook.title}</h3>
+                <p><strong>Author:</strong> {selectedBook.author}</p>
+                <p><strong>Genre:</strong> {selectedBook.genre || 'Not specified'}</p>
+                <p><strong>ISBN:</strong> {selectedBook.isbn || 'Not specified'}</p>
+                <p><strong>Publication Date:</strong> {selectedBook.publicationDate || 'Not specified'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
