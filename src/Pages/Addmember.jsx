@@ -29,6 +29,8 @@ export default function AddMember() {
         body: JSON.stringify(memberDetails),
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (response.ok) {
         alert('Member added successfully!');
         setMemberDetails({
@@ -36,10 +38,10 @@ export default function AddMember() {
           email: '',
           phone: '',
           address: '',
-          membershipType: '',
+          membershipType: 'regular',
         });
       } else {
-        alert('Failed to add member');
+        alert(data.message || 'Failed to add member');
       }
     } catch (error) {
       console.error('Error:', error);

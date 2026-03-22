@@ -4,7 +4,7 @@ import {
 	deleteMember,
 	getAllMembers,
 	updateMember,
-} from './memberController.js';
+} from './membercontroller.js';
 
 const router = express.Router();
 
