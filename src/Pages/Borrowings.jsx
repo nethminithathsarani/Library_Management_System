@@ -8,6 +8,8 @@ export default function BorrowingActivities() {
   const [borrowings, setBorrowings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
+  const [borrowForm, setBorrowForm] = useState({ bookName: '', userName: '' });
 
   const fetchBorrowings = () => {
     setLoading(true);
@@ -37,16 +39,58 @@ export default function BorrowingActivities() {
     fetchBorrowings();
   }, []);
 
-  const handleReturn = (id) => {
-    fetch(`http://localhost:5000/api/borrowings/${id}`, {
-      method: 'DELETE',
-    })
-      .then(() => {
-        fetchBorrowings();
-      })
-      .catch(() => {
-        setError('Failed to mark as returned');
+  const handleBorrowSubmit = async (event) => {
+    event.preventDefault();
+    setActionMessage('');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/borrowings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookName: borrowForm.bookName.trim(),
+          userName: borrowForm.userName.trim(),
+        }),
       });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setActionMessage(payload.message || 'Borrow request failed');
+        return;
+      }
+
+      setActionMessage(payload.message || 'Book borrowed successfully');
+      setBorrowForm({ bookName: '', userName: '' });
+      fetchBorrowings();
+    } catch (err) {
+      console.error('Borrow failed', err);
+      setActionMessage('Borrow request failed');
+    }
+  };
+
+  const handleReturn = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/borrowings/${id}`, {
+        method: 'DELETE',
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        setActionMessage(payload.message || 'Failed to mark as returned');
+        return false;
+      }
+
+      setActionMessage(payload.message || 'Book returned successfully');
+      fetchBorrowings();
+      return true;
+    } catch (err) {
+      console.error('Return failed', err);
+      setActionMessage('Failed to mark as returned');
+      return false;
+    }
   };
 
   return (
@@ -56,31 +100,36 @@ export default function BorrowingActivities() {
       <div className="borrowing-page-container">
         <h1 className="page-title">User Borrowing Activities</h1>
 
-        <form className="borrow-form">
+        <form className="borrow-form" onSubmit={handleBorrowSubmit}>
           <h2>Borrow a Book</h2>
           <div className="form-group">
             <label htmlFor="bookName">Book Name:</label>
-            <input type="text" id="bookName" name="bookName" placeholder="Enter the book name" required />
+            <input
+              type="text"
+              id="bookName"
+              name="bookName"
+              placeholder="Enter the book name"
+              value={borrowForm.bookName}
+              onChange={(event) => setBorrowForm((prev) => ({ ...prev, bookName: event.target.value }))}
+              required
+            />
           </div>
           <div className="form-group">
             <label htmlFor="userName">User Name:</label>
-            <input type="text" id="userName" name="userName" placeholder="Enter the user name" required />
+            <input
+              type="text"
+              id="userName"
+              name="userName"
+              placeholder="Enter the user name"
+              value={borrowForm.userName}
+              onChange={(event) => setBorrowForm((prev) => ({ ...prev, userName: event.target.value }))}
+              required
+            />
           </div>
           <button type="submit" className="submit-button">Borrow</button>
         </form>
 
-        <form className="return-form">
-          <h2>Return a Book</h2>
-          <div className="form-group">
-            <label htmlFor="bookReturnName">Book Name:</label>
-            <input type="text" id="bookReturnName" name="bookReturnName" placeholder="Enter the book name" required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="userReturnName">User Name:</label>
-            <input type="text" id="userReturnName" name="userReturnName" placeholder="Enter the user name" required />
-          </div>
-          <button type="submit" className="submit-button">Return</button>
-        </form>
+        {actionMessage && <p className="action-text">{actionMessage}</p>}
 
         <div className="borrowings-table-container">
           <h2>Active Borrowings</h2>
@@ -108,6 +157,7 @@ export default function BorrowingActivities() {
                       <button
                         className="return-button"
                         onClick={() => handleReturn(borrowing.id)}
+                        type="button"
                       >
                         Mark as Returned
                       </button>

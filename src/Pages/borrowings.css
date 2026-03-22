@@ -60,6 +60,11 @@ button.submit-button:hover {
   margin-top: 20px;
 }
 
+.action-text {
+  margin: 10px 0;
+  font-weight: 600;
+}
+
 .borrowings-table {
   width: 100%;
   border-collapse: collapse;
