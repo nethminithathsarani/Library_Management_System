@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
-import './home.css';
 import Footer from '../Components/Footer';
+import { booksAPI } from '../utils/api';
+import './home.css';
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -9,18 +10,20 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // Fetch books on component mount
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/books');
-        if (!response.ok) {
-          throw new Error('Failed to fetch books');
-        }
-        const data = await response.json();
-        setBooks(data);
+        setLoading(true);
+        const bookList = await booksAPI.getAll();
+        setBooks(bookList);
       } catch (error) {
-        console.error('Error fetching books for home page:', error);
+        console.error('Failed to fetch books:', error);
+        setBooks([]);
+      } finally {
+        setLoading(false);
       }
     };
 

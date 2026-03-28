@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { booksAPI, borrowingsAPI } from '../utils/api';
 import './addBooks.css';
 
 export default function ManageBooks() {
@@ -26,6 +26,7 @@ export default function ManageBooks() {
 
   const [isBorrowing, setIsBorrowing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleBookChange = (e) => {
     const { name, value } = e.target;
@@ -55,45 +56,40 @@ export default function ManageBooks() {
       borrowDate: '',
       dueDate: '',
     });
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setIsSubmitting(true);
 
-    const endpoint = isBorrowing
-      ? 'http://localhost:5000/api/borrowings'
-      : 'http://localhost:5000/api/books';
-
-    const payload = isBorrowing
-      ? {
+    try {
+      if (isBorrowing) {
+        // Borrow a book
+        const payload = {
           bookId: Number(borrowingDetails.bookId),
           memberId: Number(borrowingDetails.memberId),
           borrowDate: borrowingDetails.borrowDate,
           dueDate: borrowingDetails.dueDate,
-        }
-      : {
+        };
+        await borrowingsAPI.create(payload);
+        alert('Book borrowed successfully!');
+      } else {
+        // Add a new book
+        const payload = {
           ...bookDetails,
           available: bookDetails.available ? 1 : 0,
           publishedYear: bookDetails.publishedYear ? Number(bookDetails.publishedYear) : null,
         };
-
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Request failed: ${response.status}`);
+        await booksAPI.create(payload);
+        alert('Book added successfully!');
       }
-
-      alert(isBorrowing ? 'Book borrowed successfully!' : 'Book added successfully!');
       resetForms();
-    } catch (error) {
-      console.error('Submission failed:', error);
-      alert('Unable to complete the action. Please try again.');
+    } catch (err) {
+      const message = err.message || 'Unable to complete the action';
+      setError(message);
+      console.error('Error:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -272,6 +268,7 @@ export default function ManageBooks() {
               </div>
             </>
           )}
+          {error && <p className="error-message">{error}</p>}
           <button type="submit" className="submit-button" disabled={isSubmitting}>
             {isSubmitting ? 'Processing...' : isBorrowing ? 'Borrow Book' : 'Add Book'}
           </button>

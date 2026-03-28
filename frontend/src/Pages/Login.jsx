@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../utils/api';
 import './login.css';
 
 export default function Login() {
@@ -19,36 +20,21 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.email.trim(),
-          password: formData.password,
-        }),
-      });
+      const result = await authAPI.login(formData.email.trim(), formData.password);
 
-      const payload = await response.json().catch(() => ({}));
+      // Store auth data
+      localStorage.setItem('authToken', result.token);
+      localStorage.setItem('authUser', JSON.stringify(result.user));
+      localStorage.setItem('authUserId', String(result.user?.id || ''));
+      localStorage.setItem('authRole', result.user?.role || '');
+      localStorage.setItem('authEmail', result.user?.email || '');
 
-      if (!response.ok) {
-        setError(payload.message || 'Login failed');
-        return;
-      }
-
-      localStorage.setItem('authToken', payload.token);
-      localStorage.setItem('authUser', JSON.stringify(payload.user));
-      localStorage.setItem('authUserId', String(payload.user?.id || ''));
-      localStorage.setItem('authRole', payload.user?.role || '');
-      localStorage.setItem('authEmail', payload.user?.email || '');
-
-      if (payload.user?.role === 'admin') {
-        navigate('/Borrowings');
-      } else {
-        navigate('/my-borrowings');
-      }
+      // Navigate based on role
+      navigate(result.user?.role === 'admin' ? '/Borrowings' : '/my-borrowings');
     } catch (err) {
-      console.error('Login failed', err);
-      setError('Unable to connect to server');
+      const message = err.message || 'Unable to connect to server';
+      setError(message);
+      console.error('Login error:', err);
     } finally {
       setLoading(false);
     }
