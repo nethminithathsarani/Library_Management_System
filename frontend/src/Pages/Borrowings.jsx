@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { borrowingsAPI, membersAPI, booksAPI } from '../utils/api';
 import './borrowings.css';
 
 export default function BorrowingActivities() {
@@ -18,17 +18,8 @@ export default function BorrowingActivities() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:5000/api/borrowings/admin', {
-        headers: getAuthHeaders(),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload.message || 'Failed to load borrowings');
-      }
-
-      const data = await res.json();
-      setBorrowings(Array.isArray(data) ? data : []);
+      const data = await borrowingsAPI.getAllAdmin();
+      setBorrowings(data || []);
     } catch (err) {
       setBorrowings([]);
       setError(err.message || 'Failed to load borrowings');
@@ -39,23 +30,13 @@ export default function BorrowingActivities() {
 
   const fetchLookupData = async () => {
     try {
-      const [membersRes, booksRes] = await Promise.all([
-        fetch('http://localhost:5000/api/members', { headers: getAuthHeaders() }),
-        fetch('http://localhost:5000/api/books'),
+      const [membersData, booksData] = await Promise.all([
+        membersAPI.getAll(),
+        booksAPI.getAll(),
       ]);
 
-      if (!membersRes.ok) {
-        throw new Error('Failed to load members');
-      }
-
-      if (!booksRes.ok) {
-        throw new Error('Failed to load books');
-      }
-
-      const [membersData, booksData] = await Promise.all([membersRes.json(), booksRes.json()]);
-
-      setMembers(Array.isArray(membersData) ? membersData : []);
-      setBooks(Array.isArray(booksData) ? booksData : []);
+      setMembers(membersData || []);
+      setBooks(booksData || []);
     } catch (err) {
       setActionMessage(err.message || 'Failed to load borrow form data');
     }
@@ -71,23 +52,12 @@ export default function BorrowingActivities() {
     setActionMessage('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/borrowings', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          memberId: Number(borrowForm.memberId),
-          bookId: Number(borrowForm.bookId),
-        }),
+      await borrowingsAPI.create({
+        memberId: Number(borrowForm.memberId),
+        bookId: Number(borrowForm.bookId),
       });
 
-      const payload = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        setActionMessage(payload.message || 'Borrow request failed');
-        return;
-      }
-
-      setActionMessage(payload.message || 'Book borrowed successfully');
+      setActionMessage('Book borrowed successfully');
       setBorrowForm({ memberId: '', bookId: '' });
       fetchBorrowings();
     } catch (err) {
@@ -97,18 +67,8 @@ export default function BorrowingActivities() {
 
   const handleReturn = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/borrowings/${id}/return`, {
-        method: 'PATCH',
-        headers: getAuthHeaders(),
-      });
-
-      const payload = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        setActionMessage(payload.message || 'Failed to mark as returned');
-        return;
-      }
-
-      setActionMessage(payload.message || 'Book returned successfully');
+      await borrowingsAPI.return(id);
+      setActionMessage('Book returned successfully');
       fetchBorrowings();
     } catch (err) {
       setActionMessage(err.message || 'Failed to mark as returned');

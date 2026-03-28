@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { membersAPI } from '../utils/api';
 import './addmember.css';
 
 export default function AddMember() {
@@ -36,27 +36,16 @@ export default function AddMember() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/members', {
-        method: 'POST',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          createUserAccount: true,
-          name: memberDetails.name.trim(),
-          email: memberDetails.email.trim(),
-          password: memberDetails.password,
-          phone: memberDetails.phone.trim(),
-          address: memberDetails.address.trim(),
-          membership: memberDetails.membership,
-          memberCode: memberDetails.memberCode.trim(),
-        }),
+      await membersAPI.create({
+        createUserAccount: true,
+        name: memberDetails.name.trim(),
+        email: memberDetails.email.trim(),
+        password: memberDetails.password,
+        phone: memberDetails.phone.trim(),
+        address: memberDetails.address.trim(),
+        membership: memberDetails.membership,
+        memberCode: memberDetails.memberCode.trim(),
       });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        setError(data.message || 'Failed to create linked member account');
-        return;
-      }
 
       setMessage('Member and linked user account created successfully.');
       setMemberDetails({
@@ -70,7 +59,7 @@ export default function AddMember() {
       });
     } catch (requestError) {
       console.error('Error:', requestError);
-      setError('An error occurred while creating the member account');
+      setError(requestError.message || 'An error occurred while creating the member account');
     } finally {
       setLoading(false);
     }

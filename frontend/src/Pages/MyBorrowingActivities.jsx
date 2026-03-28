@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { borrowingsAPI } from '../utils/api';
 import './borrowings.css';
 
 export default function MyBorrowingActivities() {
@@ -15,16 +15,7 @@ export default function MyBorrowingActivities() {
       setError('');
 
       try {
-        const res = await fetch('http://localhost:5000/api/borrowings/me', {
-          headers: getAuthHeaders(),
-        });
-
-        if (!res.ok) {
-          const payload = await res.json().catch(() => ({}));
-          throw new Error(payload.message || 'Failed to fetch your borrowing activities');
-        }
-
-        const data = await res.json();
+        const data = await borrowingsAPI.getMy();
         setBorrowings(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message || 'Failed to load your borrowing activities');

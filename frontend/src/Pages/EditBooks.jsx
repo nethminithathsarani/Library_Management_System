@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { booksAPI } from '../utils/api';
 import './editBooks.css';
-
-const API_BASE = 'http://localhost:5000/api/books';
 
 const emptyBook = {
   title: '',
@@ -30,10 +28,8 @@ export default function EditDeleteBooks() {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(API_BASE);
-        if (!res.ok) throw new Error('Failed to load books');
-        const data = await res.json();
-        setBooks(data);
+        const data = await booksAPI.getAll();
+        setBooks(data || []);
       } catch (err) {
         setError(err.message || 'Unable to load books');
       } finally {
@@ -79,11 +75,7 @@ export default function EditDeleteBooks() {
   const handleDelete = async (bookId) => {
     if (!window.confirm('Delete this book?')) return;
     try {
-      const res = await fetch(`${API_BASE}/${bookId}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
-      if (!res.ok) throw new Error('Delete failed');
+      await booksAPI.delete(bookId);
       setBooks((prev) => prev.filter((b) => b.id !== bookId));
     } catch (err) {
       alert(err.message || 'Error deleting book');
@@ -119,15 +111,7 @@ export default function EditDeleteBooks() {
     setError('');
     try {
       const payload = normalizePayload(modalBook);
-      const res = await fetch(`${API_BASE}/${modalBook.id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Update failed');
-      }
+      await booksAPI.update(modalBook.id, payload);
       const updated = { ...modalBook, ...payload };
       setBooks((prev) => prev.map((b) => (b.id === modalBook.id ? { ...b, ...updated } : b)));
       closeModal();

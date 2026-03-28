@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { authAPI } from '../utils/api';
 import './signup.css';
 
 const SignUp = () => {
@@ -35,31 +36,18 @@ const SignUp = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          password: formData.password,
-        }),
+      await authAPI.signup({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
       });
-
-      const payload = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        setError(payload.message || 'Signup failed');
-        return;
-      }
 
       setSuccessMessage('Account created successfully. Admin can now link your member profile. Redirecting to login...');
       setFormData({ name: '', email: '', password: '', confirmPassword: '' });
       setTimeout(() => navigate('/login'), 1600);
     } catch (err) {
       console.error('Signup failed', err);
-      setError('Unable to connect to server');
+      setError(err.message || 'Unable to connect to server');
     } finally {
       setLoading(false);
     }

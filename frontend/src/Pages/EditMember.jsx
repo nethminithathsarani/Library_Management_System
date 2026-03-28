@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
-import { getAuthHeaders } from '../utils/auth';
+import { membersAPI } from '../utils/api';
 import './editmember.css';
-
-const API_BASE = 'http://localhost:5000/api/members';
 
 const emptyMember = {
   name: '',
@@ -27,10 +25,8 @@ export default function EditMember() {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(API_BASE, { headers: getAuthHeaders() });
-        if (!res.ok) throw new Error('Failed to load members');
-        const data = await res.json();
-        setMembers(data);
+        const data = await membersAPI.getAll();
+        setMembers(data || []);
       } catch (err) {
         setError(err.message || 'Unable to load members');
       } finally {
@@ -58,15 +54,7 @@ export default function EditMember() {
     if (!window.confirm('Delete this member and linked user account?')) return;
 
     try {
-      const res = await fetch(`${API_BASE}/${memberId}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Delete failed');
-      }
-
+      await membersAPI.delete(memberId);
       setMembers((prev) => prev.filter((m) => m.id !== memberId));
     } catch (err) {
       alert(err.message || 'Error deleting member');
@@ -98,17 +86,7 @@ export default function EditMember() {
         memberCode: modalMember.member_code,
       };
 
-      const res = await fetch(`${API_BASE}/${modalMember.id}`, {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message || 'Update failed');
-      }
-
+      await membersAPI.update(modalMember.id, payload);
       setMembers((prev) =>
         prev.map((member) => (member.id === modalMember.id ? { ...member, ...payload } : member)),
       );
