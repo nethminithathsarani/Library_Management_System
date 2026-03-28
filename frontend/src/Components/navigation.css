@@ -85,7 +85,7 @@
 
 .nav-links li a {
   text-decoration: none;
-  color: #100635;
+  color: #f3f6ff;
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -99,4 +99,35 @@
 
 .nav-icon {
   font-size: 1.6rem;
+}
+
+.auth-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.auth-user-name {
+  color: #dbe8ff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #7f95b4;
+  background: transparent;
+  color: #f3f6ff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.logout-button:hover {
+  background-color: #04182d;
 }

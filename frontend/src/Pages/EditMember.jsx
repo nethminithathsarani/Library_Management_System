@@ -1,7 +1,7 @@
-
 import { useEffect, useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
+import { getAuthHeaders } from '../utils/auth';
 import './editmember.css';
 
 const API_BASE = 'http://localhost:5000/api/members';
@@ -11,7 +11,8 @@ const emptyMember = {
   email: '',
   phone: '',
   address: '',
-  membershipType: 'regular',
+  membership: 'standard',
+  member_code: '',
 };
 
 export default function EditMember() {
@@ -26,7 +27,7 @@ export default function EditMember() {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(API_BASE);
+        const res = await fetch(API_BASE, { headers: getAuthHeaders() });
         if (!res.ok) throw new Error('Failed to load members');
         const data = await res.json();
         setMembers(data);
@@ -44,7 +45,7 @@ export default function EditMember() {
     setModalMember({
       ...emptyMember,
       ...member,
-      membershipType: member.membershipType || 'regular',
+      membership: member.membership || 'standard',
     });
   };
 
@@ -54,10 +55,13 @@ export default function EditMember() {
   };
 
   const handleDelete = async (memberId) => {
-    if (!window.confirm('Delete this member?')) return;
+    if (!window.confirm('Delete this member and linked user account?')) return;
 
     try {
-      const res = await fetch(`${API_BASE}/${memberId}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE}/${memberId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message || 'Delete failed');
@@ -90,12 +94,13 @@ export default function EditMember() {
         email: modalMember.email,
         phone: modalMember.phone,
         address: modalMember.address,
-        membershipType: modalMember.membershipType || 'regular',
+        membership: modalMember.membership || 'standard',
+        memberCode: modalMember.member_code,
       };
 
       const res = await fetch(`${API_BASE}/${modalMember.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
 
@@ -118,11 +123,12 @@ export default function EditMember() {
   const renderRow = (member) => (
     <tr key={member.id}>
       <td>{member.id}</td>
-      <td>{member.name}</td>
-      <td>{member.email}</td>
+      <td>{member.user_id}</td>
+      <td>{member.name || '-'}</td>
+      <td>{member.email || '-'}</td>
       <td>{member.phone || '-'}</td>
       <td>{member.address || '-'}</td>
-      <td>{member.membershipType || '-'}</td>
+      <td>{member.membership || '-'}</td>
       <td>
         <button onClick={() => openEdit(member)} className="edit-button">Edit</button>
         <button onClick={() => handleDelete(member.id)} className="delete-button">Delete</button>
@@ -147,6 +153,7 @@ export default function EditMember() {
               <thead>
                 <tr>
                   <th>ID</th>
+                  <th>User ID</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Phone</th>
@@ -160,7 +167,7 @@ export default function EditMember() {
                   members.map((member) => renderRow(member))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="no-data">No members available.</td>
+                    <td colSpan="8" className="no-data">No members available.</td>
                   </tr>
                 )}
               </tbody>
@@ -174,7 +181,7 @@ export default function EditMember() {
           <div className="member-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Edit Member</h2>
-              <button type="button" className="member-modal-close" onClick={closeModal} aria-label="Close">×</button>
+              <button type="button" className="member-modal-close" onClick={closeModal} aria-label="Close">x</button>
             </div>
 
             <div className="modal-grid">
@@ -205,14 +212,21 @@ export default function EditMember() {
               <label>
                 Membership Type
                 <select
-                  value={modalMember.membershipType || 'regular'}
-                  onChange={(e) => setModalMember((prev) => ({ ...prev, membershipType: e.target.value }))}
+                  value={modalMember.membership || 'standard'}
+                  onChange={(e) => setModalMember((prev) => ({ ...prev, membership: e.target.value }))}
                 >
-                  <option value="regular">Regular</option>
+                  <option value="standard">Standard</option>
                   <option value="premium">Premium</option>
                   <option value="student">Student</option>
-                  <option value="standard">Standard</option>
                 </select>
+              </label>
+              <label>
+                Member Code
+                <input
+                  type="text"
+                  value={modalMember.member_code || ''}
+                  onChange={(e) => setModalMember((prev) => ({ ...prev, member_code: e.target.value }))}
+                />
               </label>
               <label className="full-width">
                 Address
@@ -240,4 +254,3 @@ export default function EditMember() {
     </div>
   );
 }
-

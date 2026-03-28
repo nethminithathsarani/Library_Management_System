@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
+import { getAuthHeaders } from '../utils/auth';
 import './editBooks.css';
 
 const API_BASE = 'http://localhost:5000/api/books';
@@ -78,7 +79,10 @@ export default function EditDeleteBooks() {
   const handleDelete = async (bookId) => {
     if (!window.confirm('Delete this book?')) return;
     try {
-      const res = await fetch(`${API_BASE}/${bookId}`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE}/${bookId}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+      });
       if (!res.ok) throw new Error('Delete failed');
       setBooks((prev) => prev.filter((b) => b.id !== bookId));
     } catch (err) {
@@ -117,7 +121,7 @@ export default function EditDeleteBooks() {
       const payload = normalizePayload(modalBook);
       const res = await fetch(`${API_BASE}/${modalBook.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
       if (!res.ok) {

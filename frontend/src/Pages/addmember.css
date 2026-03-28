@@ -1,5 +1,5 @@
-/* General form styling for all forms */
-form {
+/* Add member form styling */
+.add-member-form {
   width: 100%;
   max-width: 500px;  /* Match the max-width of your "Add Member" page form */
   margin: 0 auto;  /* Center the form */
@@ -10,10 +10,10 @@ form {
   box-shadow: none;  /* Remove box shadow */
 }
 
-/* Optionally, adjust the specific size of inputs inside all forms */
-form input,
-form textarea,
-form select {
+/* Inputs within add-member form */
+.add-member-form input,
+.add-member-form textarea,
+.add-member-form select {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -49,28 +49,28 @@ form select {
   flex-direction: column;
 }
 
-label {
+.add-member-form label {
   font-size: 1rem;
   margin-bottom: 5px;
   color: #555;
 }
 
-input,
-textarea,
-select {
+.add-member-form input,
+.add-member-form textarea,
+.add-member-form select {
   padding: 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-textarea {
+.add-member-form textarea {
   resize: none;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+.add-member-form input:focus,
+.add-member-form textarea:focus,
+.add-member-form select:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
@@ -90,4 +90,21 @@ select:focus {
 
 .submit-button:hover {
   background-color: #0056b3;
+}
+
+.submit-button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #b00020;
+  font-weight: 600;
+  margin: 0;
+}
+
+.form-success {
+  color: #1f7a1f;
+  font-weight: 600;
+  margin: 0;
 }

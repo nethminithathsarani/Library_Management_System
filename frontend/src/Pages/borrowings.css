@@ -10,27 +10,31 @@
   font-size: 2em;
 }
 
-form {
+.borrow-form {
   margin: 20px 0;
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
-form h2 {
+.borrow-form h2 {
   margin-bottom: 10px;
 }
 
-.form-group {
+.borrow-form .form-group {
   margin-bottom: 15px;
 }
 
-label {
+.borrow-form label {
   display: block;
   margin-bottom: 5px;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea {
+.borrow-form input[type="text"],
+.borrow-form input[type="email"],
+.borrow-form input[type="password"],
+.borrow-form select,
+.borrow-form textarea {
   background-color: #f2f2f2; /* Very light gray background */
   color: #333; /* Dark text color */
   padding: 10px;
@@ -39,20 +43,20 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
   border: 1px solid #ccc; /* Border color */
 }
 
-button {
+.borrow-form button {
   padding: 10px;
   width: 100%;
   box-sizing: border-box;
 }
 
-button.submit-button {
+.borrow-form button.submit-button {
   background-color: #007bff;
   color: white;
   border: none;
   cursor: pointer;
 }
 
-button.submit-button:hover {
+.borrow-form button.submit-button:hover {
   background-color: #0056b3;
 }
 

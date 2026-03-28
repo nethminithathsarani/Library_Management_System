@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navigation from '../Components/Navigation';
 import Footer from '../Components/Footer';
+import { getAuthHeaders } from '../utils/auth';
 import './addBooks.css';
 
 export default function ManageBooks() {
@@ -80,9 +81,7 @@ export default function ManageBooks() {
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
 

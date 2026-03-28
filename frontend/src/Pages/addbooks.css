@@ -1,13 +1,5 @@
-/* General Page Styling */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container */
-.container {
+/* Add books page container */
+.manage-books-container {
   max-width: 500px;
   margin: 50px auto;
   background-color: white;
@@ -17,20 +9,22 @@ body {
 }
 
 /* Title */
-h2 {
+.manage-books-container .page-title {
   text-align: center;
   color: black;
 }
 
 /* Labels */
-label {
+.add-book-form label {
   font-weight: bold;
   display: block;
   margin-top: 10px;
 }
 
 /* Input Fields & Select */
-input, select, textarea {
+.add-book-form input,
+.add-book-form select,
+.add-book-form textarea {
   width: 100%;
   padding: 10px;
   margin-top: 5px;
@@ -42,25 +36,27 @@ input, select, textarea {
 }
 
 /* Ensuring textarea looks like input fields */
-textarea {
+.add-book-form textarea {
   resize: none;
   height: 100px; /* Adjust height as needed */
 }
 
 /* Focus Effects */
-input:focus, select:focus, textarea:focus {
+.add-book-form input:focus,
+.add-book-form select:focus,
+.add-book-form textarea:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
 /* Dropdown Styling */
-select {
+.add-book-form select {
   appearance: none;
 }
 
 /* Date Input */
-input[type="date"] {
+.add-book-form input[type="date"] {
   background-color: #ffffff !important;
   color: black !important;
   padding: 10px;
@@ -68,13 +64,13 @@ input[type="date"] {
 }
 
 /* Date Picker Icon Fix */
-input[type="date"]::-webkit-calendar-picker-indicator {
+.add-book-form input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0); /* Ensures it remains visible */
   cursor: pointer;
 }
 
 /* Submit Button */
-button {
+.add-book-form button {
   width: 100%;
   padding: 10px;
   background-color: #007bff;
@@ -86,6 +82,23 @@ button {
   margin-top: 15px;
 }
 
-button:hover {
+.add-book-form button:hover {
   background-color: #0056b3;
+}
+
+/* Mode switch button */
+.manage-books-container > button {
+  width: 100%;
+  padding: 10px;
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.manage-books-container > button:hover {
+  background-color: #5c636a;
 }

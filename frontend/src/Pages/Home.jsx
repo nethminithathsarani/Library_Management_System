@@ -7,6 +7,8 @@ export default function Home() {
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -25,7 +27,19 @@ export default function Home() {
     fetchBooks();
   }, []);
 
-  const popularBooks = books.slice(0, 5);
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredBooks = normalizedSearchQuery
+    ? books.filter((book) => {
+        const title = book.title?.toLowerCase() || '';
+        const author = book.author?.toLowerCase() || '';
+        const genre = book.genre?.toLowerCase() || '';
+        const isbn = book.isbn?.toLowerCase() || '';
+
+        return [title, author, genre, isbn].some((field) => field.includes(normalizedSearchQuery));
+      })
+    : books;
+
+  const popularBooks = filteredBooks.slice(0, 5);
 
   const getBookImage = (book) => {
     // Prefer coverImageUrl from the database; fallback to a default image
@@ -57,6 +71,16 @@ export default function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedBook(null);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    setSearchQuery(searchInput);
+  };
+
+  const handleSearchClear = () => {
+    setSearchInput('');
+    setSearchQuery('');
   };
 
   const renderBookCard = (book) => (
@@ -93,16 +117,30 @@ export default function Home() {
           className="homeLibrary"
         />
 
-        <div className="search-bar-container">
+        <form className="search-bar-container" onSubmit={handleSearchSubmit}>
           <input
             type="text"
             placeholder="Search books..."
             className="search-input"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            aria-label="Search books"
           />
-          <button type="button" className="search-button">
+          <button type="submit" className="search-button">
             Search
           </button>
-        </div>
+          {searchQuery && (
+            <button type="button" className="search-clear-button" onClick={handleSearchClear}>
+              Clear
+            </button>
+          )}
+        </form>
+
+        {searchQuery && (
+          <p className="search-result-text">
+            Showing {filteredBooks.length} result{filteredBooks.length === 1 ? '' : 's'} for &quot;{searchQuery.trim()}&quot;
+          </p>
+        )}
       </div>
 
       <section className="popular-books-section">
@@ -119,10 +157,10 @@ export default function Home() {
       <section className="all-books-section">
         <h2 className="section-title">All Books</h2>
         <div className="books-container">
-          {books.length > 0 ? (
-            books.map((book) => renderBookCard(book))
+          {filteredBooks.length > 0 ? (
+            filteredBooks.map((book) => renderBookCard(book))
           ) : (
-            <p>No books available.</p>
+            <p>{searchQuery ? 'No books match your search.' : 'No books available.'}</p>
           )}
         </div>
       </section>
