@@ -1,14 +1,18 @@
 import express from 'express';
 import {
-	borrowBook,
-	getAllBorrowings,
-	returnBook,
+  borrowBook,
+  getAllBorrowingsForAdmin,
+  getMyBorrowings,
+  returnBook,
 } from './borrowingController.js';
+import { verifyToken } from './middleware/authMiddleware.js';
+import { allowRoles } from './middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', borrowBook);
-router.delete('/:borrowingId', returnBook);
-router.get('/', getAllBorrowings);
+router.get('/me', verifyToken, allowRoles('user'), getMyBorrowings);
+router.get('/admin', verifyToken, allowRoles('admin'), getAllBorrowingsForAdmin);
+router.post('/', verifyToken, allowRoles('admin'), borrowBook);
+router.patch('/:borrowingId/return', verifyToken, allowRoles('admin'), returnBook);
 
 export default router;

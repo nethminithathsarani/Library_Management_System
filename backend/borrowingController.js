@@ -12,16 +12,26 @@ const rollbackWithError = (res, error, message, status = 500) => {
 };
 
 export const borrowBook = (req, res, next) => {
-  const { bookName, userName, borrowDate, dueDate } = req.body;
+  const {
+    memberId,
+    member_id,
+    bookId,
+    book_id,
+    borrowDate,
+    borrow_date,
+    dueDate,
+    due_date,
+  } = req.body;
 
-  if (!bookName || !userName) {
-    res.status(400).json({ message: 'bookName and userName are required' });
+  const resolvedMemberId = Number(memberId || member_id);
+  const resolvedBookId = Number(bookId || book_id);
+
+  if (!resolvedMemberId || !resolvedBookId) {
+    res.status(400).json({ message: 'memberId and bookId are required' });
     return;
   }
 
-  const cleanBookName = String(bookName).trim();
-  const cleanUserName = String(userName).trim();
-  const borrowDateValue = borrowDate || formatDateOnly(new Date());
+  const borrowDateValue = borrowDate || borrow_date || formatDateOnly(new Date());
 
   const parsedBorrowDate = new Date(borrowDateValue);
   if (Number.isNaN(parsedBorrowDate.getTime())) {
@@ -29,7 +39,7 @@ export const borrowBook = (req, res, next) => {
     return;
   }
 
-  const dueDateValue = dueDate || (() => {
+  const dueDateValue = dueDate || due_date || (() => {
     const d = new Date(parsedBorrowDate);
     d.setDate(d.getDate() + 14);
     return formatDateOnly(d);
@@ -41,7 +51,7 @@ export const borrowBook = (req, res, next) => {
       return;
     }
 
-    db.query('SELECT id, name FROM members WHERE name = ? LIMIT 1', [cleanUserName], (memberErr, memberRows) => {
+    db.query('SELECT id FROM members WHERE id = ? LIMIT 1', [resolvedMemberId], (memberErr, memberRows) => {
       if (memberErr) {
         rollbackWithError(res, memberErr, 'Failed to validate member');
         return;
@@ -52,62 +62,53 @@ export const borrowBook = (req, res, next) => {
         return;
       }
 
-      db.query(
-        'SELECT id, title, available FROM books WHERE title = ? LIMIT 1',
-        [cleanBookName],
-        (bookErr, bookRows) => {
-          if (bookErr) {
-            rollbackWithError(res, bookErr, 'Failed to validate book');
+      db.query('SELECT id, title, available FROM books WHERE id = ? LIMIT 1', [resolvedBookId], (bookErr, bookRows) => {
+        if (bookErr) {
+          rollbackWithError(res, bookErr, 'Failed to validate book');
+          return;
+        }
+
+        if (!bookRows.length) {
+          rollbackWithError(res, null, 'Book not found', 404);
+          return;
+        }
+
+        const book = bookRows[0];
+        if (!Number(book.available)) {
+          rollbackWithError(res, null, 'Book is not available', 409);
+          return;
+        }
+
+        const insertSql = 'INSERT INTO borrowings (book_id, member_id, borrow_date, due_date, status) VALUES (?, ?, ?, ?, ?)';
+
+        db.query(insertSql, [book.id, resolvedMemberId, borrowDateValue, dueDateValue, 'borrowed'], (insertErr, insertResult) => {
+          if (insertErr) {
+            rollbackWithError(res, insertErr, 'Failed to create borrowing record');
             return;
           }
 
-          if (!bookRows.length) {
-            rollbackWithError(res, null, 'Book not found', 404);
-            return;
-          }
+          db.query('UPDATE books SET available = 0 WHERE id = ?', [book.id], (updateErr) => {
+            if (updateErr) {
+              rollbackWithError(res, updateErr, 'Failed to update book availability');
+              return;
+            }
 
-          const book = bookRows[0];
-          if (!Number(book.available)) {
-            rollbackWithError(res, null, 'Book is not available', 409);
-            return;
-          }
-
-          const insertSql =
-            'INSERT INTO borrowings (bookId, memberId, bookName, userName, borrowDate, dueDate, status) VALUES (?, ?, ?, ?, ?, ?, ?)';
-
-          db.query(
-            insertSql,
-            [book.id, memberRows[0].id, book.title, memberRows[0].name, borrowDateValue, dueDateValue, 'BORROWED'],
-            (insertErr, insertResult) => {
-              if (insertErr) {
-                rollbackWithError(res, insertErr, 'Failed to create borrowing record');
+            db.commit((commitErr) => {
+              if (commitErr) {
+                rollbackWithError(res, commitErr, 'Failed to finalize borrowing');
                 return;
               }
 
-              db.query('UPDATE books SET available = 0 WHERE id = ?', [book.id], (updateErr) => {
-                if (updateErr) {
-                  rollbackWithError(res, updateErr, 'Failed to update book availability');
-                  return;
-                }
-
-                db.commit((commitErr) => {
-                  if (commitErr) {
-                    rollbackWithError(res, commitErr, 'Failed to finalize borrowing');
-                    return;
-                  }
-
-                  res.status(201).json({
-                    message: 'Book borrowed successfully',
-                    id: insertResult.insertId,
-                    borrowDate: borrowDateValue,
-                    dueDate: dueDateValue,
-                  });
-                });
+              res.status(201).json({
+                message: 'Book borrowed successfully',
+                id: insertResult.insertId,
+                borrowDate: borrowDateValue,
+                dueDate: dueDateValue,
               });
-            },
-          );
-        },
-      );
+            });
+          });
+        });
+      });
     });
   });
 };
@@ -122,7 +123,7 @@ export const returnBook = (req, res, next) => {
       return;
     }
 
-    db.query('SELECT id, bookId, bookName, status FROM borrowings WHERE id = ? LIMIT 1', [borrowingId], (findErr, rows) => {
+    db.query('SELECT id, book_id, status FROM borrowings WHERE id = ? LIMIT 1', [borrowingId], (findErr, rows) => {
       if (findErr) {
         rollbackWithError(res, findErr, 'Failed to locate borrowing');
         return;
@@ -134,21 +135,18 @@ export const returnBook = (req, res, next) => {
       }
 
       const borrowing = rows[0];
-      if (borrowing.status === 'RETURNED') {
+      if (borrowing.status === 'returned') {
         rollbackWithError(res, null, 'Book already returned', 409);
         return;
       }
 
-      db.query(
-        'UPDATE borrowings SET status = ?, returnDate = ? WHERE id = ?',
-        ['RETURNED', returnDateValue, borrowingId],
-        (markReturnedErr) => {
-          if (markReturnedErr) {
-            rollbackWithError(res, markReturnedErr, 'Failed to return book');
-            return;
-          }
+      db.query('UPDATE borrowings SET status = ?, return_date = ? WHERE id = ?', ['returned', returnDateValue, borrowingId], (markReturnedErr) => {
+        if (markReturnedErr) {
+          rollbackWithError(res, markReturnedErr, 'Failed to return book');
+          return;
+        }
 
-          db.query('UPDATE books SET available = 1 WHERE id = ?', [borrowing.bookId], (updateErr) => {
+        db.query('UPDATE books SET available = 1 WHERE id = ?', [borrowing.book_id], (updateErr) => {
           if (updateErr) {
             rollbackWithError(res, updateErr, 'Failed to update book availability');
             return;
@@ -162,18 +160,67 @@ export const returnBook = (req, res, next) => {
 
             res.status(200).json({ message: 'Book returned successfully' });
           });
-          });
-        },
-      );
+        });
+      });
     });
   });
 };
 
-export const getAllBorrowings = (req, res, next) => {
-  const sql =
-    "SELECT id, bookName, userName, borrowDate, dueDate FROM borrowings WHERE status = 'BORROWED' ORDER BY id DESC";
+export const getAllBorrowingsForAdmin = (req, res, next) => {
+  const sql = `
+    SELECT
+      brr.id,
+      brr.member_id,
+      brr.book_id,
+      brr.borrow_date,
+      brr.due_date,
+      brr.return_date,
+      brr.status,
+      m.name AS member_name,
+      m.email AS member_email,
+      u.name AS username,
+      u.role,
+      bk.title AS book_title,
+      bk.isbn
+    FROM borrowings brr
+    INNER JOIN members m ON m.id = brr.member_id
+    INNER JOIN users u ON u.id = m.user_id
+    INNER JOIN books bk ON bk.id = brr.book_id
+    ORDER BY brr.id DESC
+  `;
 
   db.query(sql, (err, results) => {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.status(200).json(results);
+  });
+};
+
+export const getMyBorrowings = (req, res, next) => {
+  const sql = `
+    SELECT
+      brr.id,
+      brr.borrow_date,
+      brr.due_date,
+      brr.return_date,
+      brr.status,
+      bk.id AS book_id,
+      bk.title AS book_title,
+      bk.author,
+      bk.isbn,
+      m.id AS member_id,
+      m.name AS member_name
+    FROM borrowings brr
+    INNER JOIN members m ON m.id = brr.member_id
+    INNER JOIN users u ON u.id = m.user_id
+    INNER JOIN books bk ON bk.id = brr.book_id
+    WHERE u.id = ?
+    ORDER BY brr.id DESC
+  `;
+
+  db.query(sql, [req.user.id], (err, results) => {
     if (err) {
       next(err);
       return;

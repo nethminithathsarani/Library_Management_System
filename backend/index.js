@@ -4,6 +4,7 @@ import cors from 'cors';
 import bookRoutes from './bookRoutes.js';
 import memberRoutes from './memberRoutes.js';
 import borrowingRoutes from './borrowingRoutes.js';
+import authRoutes from './authRoutes.js';
 import './db.js';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 app.use('/api/books', bookRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/borrowings', borrowingRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use((err, req, res, next) => {
   console.error('API error:', err);
